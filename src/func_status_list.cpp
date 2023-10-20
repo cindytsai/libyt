@@ -417,8 +417,8 @@ int func_status_list::set_exception_hook() {
     sprintf(command, "import sys\n"
                      "def mpi_libyt_interactive_mode_excepthook(exception_type, exception_value, tb):\n"
                      "    traceback.print_tb(tb)\n"
-                     "    print(\"[YT_ERROR  ] {}: {}\".format(exception_type.__name__, exception_value))\n"
-                     "    print(\"[YT_ERROR  ] Error occurred on rank {}.\".format(%d))\n"
+                     "    print(\"[LIBYT_ERROR  ] {}: {}\".format(exception_type.__name__, exception_value))\n"
+                     "    print(\"[LIBYT_ERROR  ] Error occurred on rank {}.\".format(%d))\n"
                      "sys.excepthook = mpi_libyt_interactive_mode_excepthook\n", g_myrank);
 
     if (PyRun_SimpleString(command) == 0) return YT_SUCCESS;

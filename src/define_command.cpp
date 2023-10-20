@@ -63,7 +63,7 @@ bool define_command::run() {
 
     if (g_myrank == s_Root) {
         if (m_Undefine) {
-            printf("[YT_ERROR  ] Unkown libyt command : %s\n"
+            log_error("Unkown libyt command : %s\n"
                    "(Type %%libyt help for help ...)\n", m_Command.c_str());
         }
         if (run_success) {
@@ -350,7 +350,7 @@ int define_command::set_func_run(const char *funcname, bool run, std::vector<std
     args.pop_back();
 
     if (unable_to_wrapped) {
-        if (g_myrank == s_Root) printf("[YT_ERROR  ] Please avoid using both \"\"\" and ''' for triple quotes\n");
+        if (g_myrank == s_Root) log_error("Please avoid using both \"\"\" and ''' for triple quotes\n");
         return YT_FAIL;
     }
     else {
