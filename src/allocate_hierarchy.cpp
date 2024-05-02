@@ -32,6 +32,7 @@ int allocate_hierarchy() {
     {                                                                                                                  \
         np_dim[1] = (npy_intp)DIM1;                                                                                    \
         py_obj = PyArray_SimpleNew(2, np_dim, TYPE);                                                                   \
+        PyArray_CLEARFLAGS((PyArrayObject*)py_obj, NPY_ARRAY_WRITEABLE);                                               \
                                                                                                                        \
         if (PyDict_SetItemString(g_py_hierarchy, KEY, py_obj) != 0) {                                                  \
             Py_XDECREF(py_obj);                                                                                        \
