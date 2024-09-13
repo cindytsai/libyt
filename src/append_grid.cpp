@@ -326,7 +326,7 @@ static int set_field_data(yt_grid* grid) {
 // Description :  Wrap data pointer and added under libyt.particle_data
 //
 // Note        :  1. libyt.particle_data[grid_id][particle_list.par_type][attr_name]
-//                   = NumPy array created through wrapping data pointer.
+//                   = NumPy array or memoryview created through wrapping data pointer.
 //                2. Append to dictionary only when there is data pointer passed in.
 //                3. The logistic is we create dictionary no matter what, and only append under
 //                   g_py_particle_data if there is data to wrap, so that ref count increases.
@@ -338,6 +338,7 @@ static int set_field_data(yt_grid* grid) {
 static int set_particle_data(yt_grid* grid) {
     yt_particle* particle_list = LibytProcessControl::Get().particle_list;
 
+#ifndef USE_PYBIND11
     PyObject *py_grid_id, *py_ptype_labels, *py_attributes, *py_data;
     py_grid_id = PyLong_FromLong(grid->id);
     py_ptype_labels = PyDict_New();
@@ -387,6 +388,118 @@ static int set_particle_data(yt_grid* grid) {
 
     Py_DECREF(py_ptype_labels);
     Py_DECREF(py_grid_id);
+#else
+    pybind11::module_ libyt = pybind11::module_::import("libyt");
+    pybind11::dict py_particle_data = libyt.attr("particle_data");
+
+    for (int p = 0; p < g_param_yt.num_par_types; p++) {
+        for (int a = 0; a < particle_list[p].num_attr; a++) {
+            // skip if particle attribute pointer is NULL
+            if ((grid->particle_data)[p][a].data_ptr == nullptr) continue;
+
+            // Get and check data type size and length
+            int dtype_size;
+            if (get_dtype_size(particle_list[p].attr_list[a].attr_dtype, &dtype_size) != YT_SUCCESS) {
+                YT_ABORT("Cannot get particle type [%s] attribute [%s] data type. Unable to wrap particle array.\n",
+                         particle_list[p].par_type, particle_list[p].attr_list[a].attr_name);
+            }
+            if ((grid->par_count_list)[p] <= 0) {
+                YT_ABORT("Cannot wrapped particle array with length %ld <= 0\n", (grid->par_count_list)[p]);
+            }
+
+            // Wrap the data to memoryview and bind to libyt.particle_data
+            pybind11::dict py_attr_data;
+            if (!py_particle_data.contains(pybind11::int_(grid->id))) {
+                py_attr_data = pybind11::dict();
+                py_particle_data[pybind11::int_(grid->id)] = pybind11::dict();
+                py_particle_data[pybind11::int_(grid->id)][particle_list[p].par_type] = py_attr_data;
+            } else {
+                if (!py_particle_data[pybind11::int_(grid->id)].contains(particle_list[p].par_type)) {
+                    py_attr_data = pybind11::dict();
+                    py_particle_data[pybind11::int_(grid->id)][particle_list[p].par_type] = py_attr_data;
+                } else {
+                    py_attr_data = py_particle_data[pybind11::int_(grid->id)][particle_list[p].par_type];
+                }
+            }
+
+            const char* attr_name = particle_list[p].attr_list[a].attr_name;
+            switch (particle_list[p].attr_list[a].attr_dtype) {
+                case YT_FLOAT:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<float*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_DOUBLE:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<double*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_LONGDOUBLE:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<long double*>((grid->particle_data)[p][a].data_ptr), {(grid->par_count_list)[p]},
+                        {dtype_size}, true);
+                    break;
+                case YT_CHAR:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<char*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_UCHAR:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<unsigned char*>((grid->particle_data)[p][a].data_ptr), {(grid->par_count_list)[p]},
+                        {dtype_size}, true);
+                    break;
+                case YT_SHORT:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<short*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_USHORT:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<unsigned short*>((grid->particle_data)[p][a].data_ptr), {(grid->par_count_list)[p]},
+                        {dtype_size}, true);
+                    break;
+                case YT_INT:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<int*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_UINT:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<unsigned int*>((grid->particle_data)[p][a].data_ptr), {(grid->par_count_list)[p]},
+                        {dtype_size}, true);
+                    break;
+                case YT_LONG:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<long*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_ULONG:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<unsigned long*>((grid->particle_data)[p][a].data_ptr), {(grid->par_count_list)[p]},
+                        {dtype_size}, true);
+                    break;
+                case YT_LONGLONG:
+                    py_attr_data[attr_name] =
+                        pybind11::memoryview::from_buffer(static_cast<long long*>((grid->particle_data)[p][a].data_ptr),
+                                                          {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_ULONGLONG:
+                    py_attr_data[attr_name] = pybind11::memoryview::from_buffer(
+                        static_cast<unsigned long long*>((grid->particle_data)[p][a].data_ptr),
+                        {(grid->par_count_list)[p]}, {dtype_size}, true);
+                    break;
+                case YT_DTYPE_UNKNOWN:
+                    YT_ABORT("Grid ID [ %ld ], particle type [%s] attribute [ %s ], unknown data type.\n", grid->id,
+                             particle_list[p].par_type, particle_list[p].attr_list[a].attr_name);
+                    break;
+                default:
+                    YT_ABORT("Grid ID [ %ld ], particle type [%s] attribute [ %s ], unsupported data type.\n", grid->id,
+                             particle_list[p].par_type, particle_list[p].attr_list[a].attr_name);
+            }
+        }
+    }
+#endif  // #ifndef USE_PYBIND11
 
     return YT_SUCCESS;
 }
