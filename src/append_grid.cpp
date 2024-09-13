@@ -240,71 +240,71 @@ static int set_field_data(yt_grid* grid) {
             case YT_FLOAT:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<float*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_DOUBLE:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<double*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_LONGDOUBLE:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<long double*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_CHAR:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<char*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_UCHAR:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<unsigned char*>((grid->field_data)[v].data_ptr),
                     {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_SHORT:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<short*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_USHORT:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<unsigned short*>((grid->field_data)[v].data_ptr),
                     {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_INT:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<int*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_UINT:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<unsigned int*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_LONG:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<long*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_ULONG:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<unsigned long*>((grid->field_data)[v].data_ptr),
                     {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_LONGLONG:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<long long*>((grid->field_data)[v].data_ptr), {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_ULONGLONG:
                 py_field_data[field_list[v].field_name] = pybind11::memoryview::from_buffer(
                     static_cast<unsigned long long*>((grid->field_data)[v].data_ptr),
                     {data_dim[0], data_dim[1], data_dim[2]},
-                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size});
+                    {dtype_size * data_dim[1] * data_dim[2], dtype_size * data_dim[2], dtype_size}, true);
                 break;
             case YT_DTYPE_UNKNOWN:
                 YT_ABORT("Grid ID [ %ld ], field data [ %s ], unknown data type.\n", grid->id,
