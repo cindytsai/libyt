@@ -2,6 +2,10 @@
 #include "libyt.h"
 #include "yt_combo.h"
 
+#ifdef USE_PYBIND11
+#include "pybind11/embed.h"
+#endif
+
 //-------------------------------------------------------------------------------------------------------
 // Function    :  yt_getGridInfo_*
 // Description :  Get dimension of the grid with grid id = gid.
@@ -253,6 +257,7 @@ int yt_getGridInfo_FieldData(const long gid, const char* field_name, yt_data* fi
                  __FUNCTION__);
     }
 
+#ifndef USE_PYBIND11
     // get dictionary libyt.grid_data[gid][field_name]
     PyObject* py_grid_id = PyLong_FromLong(gid);
     PyObject* py_field = PyUnicode_FromString(field_name);
@@ -283,6 +288,22 @@ int yt_getGridInfo_FieldData(const long gid, const char* field_name, yt_data* fi
     if (get_yt_dtype_from_npy(py_array_info->type_num, &(*field_data).data_dtype) != YT_SUCCESS) {
         YT_ABORT("No matching yt_dtype for NumPy data type num [%d].\n", py_array_info->type_num);
     }
+#else
+    pybind11::module_ libyt = pybind11::module_::import("libyt");
+    pybind11::dict py_grid_data = libyt.attr("grid_data");
+
+    // Make sure libyt.grid_data[gid][fname] exist
+    if (!py_grid_data.contains(pybind11::int_(gid))) {
+        YT_ABORT("Cannot find grid [%ld] on MPI rank [%d].\n", gid, g_myrank);
+    }
+    if (!py_grid_data[pybind11::int_(gid)].contains(field_name)) {
+        YT_ABORT("Cannot find grid [%ld] field data [%s] on MPI rank [%d].\n", gid, field_name, g_myrank);
+    }
+
+    pybind11::memoryview buffer = py_grid_data[pybind11::int_(gid)][field_name];
+    (*field_data).data_ptr = reinterpret_cast<void*>(PyMemoryView_GET_BUFFER(buffer.ptr())->buf);
+
+#endif  // #ifndef USE_PYBIND11
 
     return YT_SUCCESS;
 }
