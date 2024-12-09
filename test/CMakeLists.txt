@@ -17,6 +17,7 @@ FetchContent_MakeAvailable(googletest)
 if (NOT SERIAL_MODE)
     find_package(MPI REQUIRED)
 endif ()
+find_package(spdlog REQUIRED)
 
 # Test scripts and discover tests
 include(GoogleTest)
@@ -40,5 +41,9 @@ target_link_libraries(TestCommMPI PUBLIC
 )
 gtest_discover_tests(TestCommMPI)
 endif ()
+
+## Test Logger
+add_executable(TestLogger test_logger.cpp)
+target_link_libraries(TestLogger PUBLIC gtest_main spdlog::spdlog)
 
 endif () # if (LIBYT_RUN_TEST)

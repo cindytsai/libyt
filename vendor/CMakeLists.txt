@@ -1,5 +1,27 @@
 include(FetchContent)
 
+set(LIBYT_SPDLOG_FETCH_VERSION    1.15.0)
+#find_package(spdlog QUIET)
+#if (spdlog_FOUND) # TODO: Change to "NOT spdlog_FOUND" later
+#    message(STATUS "Unable to find spdlog, getting dependency...")
+#    set(FETCHCONTENT_BASE_DIR         "${PROJECT_SOURCE_DIR}/vendor/spdlog")
+#    FetchContent_Declare(
+#            spdlog
+#            GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
+#            GIT_TAG "v${LIBYT_SPDLOG_FETCH_VERSION}"
+#            GIT_SHALLOW TRUE
+#    )
+#    FetchContent_GetProperties(spdlog)
+#    if (NOT spdlog_POPULATED)
+#        FetchContent_Populate(spdlog)
+#        set(CMAKE_BUILD_TYPE "Release")
+#        add_subdirectory(${spdlog_SOURCE_DIR} ${spdlog_BINARY_DIR} EXCLUDE_FROM_ALL)
+#        set(spdlog_DIR ${spdlog_BINARY_DIR} CACHE INTERNAL "")
+#    endif()
+#else ()
+#    message(STATUS "Found spdlog: ${spdlog_DIR} (found version \"${spdlog_VERSION}\")")
+#endif() # if (NOT spdlog_FOUND)
+
 if (USE_PYBIND11)
 
 find_package(pybind11 QUIET)
