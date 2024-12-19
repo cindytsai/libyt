@@ -6,8 +6,9 @@
 // Function    :  yt_get_FieldsPtr
 // Description :  Get pointer of the array of struct yt_field with length num_fields.
 //
-// Note        :  1. User should call this function after yt_set_Parameters(), since we allocate field_list
-//                   there.
+// Note        :  1. User should call this function after yt_set_Parameters(), because we need to know
+//                   num_fields to properly initialize this.
+//                   This also shows a bad design of API, should fix it in libyt-v1.0.
 //
 // Parameter   :  yt_field **field_list  : Initialize and store the field list array under this pointer
 //                                         points to.
@@ -34,12 +35,11 @@ int yt_get_FieldsPtr(yt_field** field_list) {
                  LibytProcessControl::Get().param_yt_.num_fields);
     }
 
-    log_info("Getting pointer to field list information ...\n");
+    LibytProcessControl::Get().data_structure_amr_.field_list_ =
+        new yt_field[LibytProcessControl::Get().param_yt_.num_fields];
 
-    // Store the field_list ptr to *field_list
     *field_list = LibytProcessControl::Get().data_structure_amr_.field_list_;
 
-    // Above all works like charm
     LibytProcessControl::Get().get_fieldsPtr = true;
     log_info("Getting pointer to field list information  ... done.\n");
 

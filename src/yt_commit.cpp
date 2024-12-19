@@ -38,11 +38,13 @@ int yt_commit() {
         YT_ABORT("Please invoke yt_set_Parameters() before calling %s()!\n", __FUNCTION__);
     }
 
+    // TODO: get_fieldsPtr is used here (need to have a new mechanism to make sure the amr structure
+    //       is properly set before calling commit.
     // check if user sets field_list
-    if (!LibytProcessControl::Get().get_fieldsPtr) {
-        YT_ABORT("num_fields == %d, please invoke yt_get_FieldsPtr() before calling %s()!\n",
-                 LibytProcessControl::Get().param_yt_.num_fields, __FUNCTION__);
-    }
+    //    if (!LibytProcessControl::Get().get_fieldsPtr) {
+    //        YT_ABORT("num_fields == %d, please invoke yt_get_FieldsPtr() before calling %s()!\n",
+    //                 LibytProcessControl::Get().param_yt_.num_fields, __FUNCTION__);
+    //    }
 
     // check if user sets particle_list
     if (!LibytProcessControl::Get().get_particlesPtr) {

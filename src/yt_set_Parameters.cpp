@@ -61,8 +61,6 @@ int yt_set_Parameters(yt_param_yt* input_param_yt) {
     print_yt_param_yt(*input_param_yt);
 
     // store user-provided parameters to a libyt internal variable
-    // ==> must do this before calling allocate_hierarchy() since it will need "param_yt.num_grids"
-    // ==> must do this before setting the default figure base name since it will overwrite param_yt.fig_basename
     LibytProcessControl::Get().param_yt_ = *input_param_yt;
     yt_param_yt& param_yt = LibytProcessControl::Get().param_yt_;
 
@@ -154,14 +152,6 @@ int yt_set_Parameters(yt_param_yt* input_param_yt) {
 #endif  // #ifdef USE_PYBIND11
 
     log_debug("Inserting YT parameters to libyt.param_yt ... done\n");
-
-    // if num_fields > 0, which means we want to load fields
-    if (param_yt.num_fields > 0) {
-        LibytProcessControl::Get().data_structure_amr_.field_list_ = new yt_field[param_yt.num_fields];
-    } else {
-        LibytProcessControl::Get().data_structure_amr_.field_list_ = nullptr;
-        LibytProcessControl::Get().get_fieldsPtr = true;
-    }
 
     // if num_par_types > 0, which means want to load particle
     if (param_yt.num_par_types > 0) {
