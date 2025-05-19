@@ -326,3 +326,39 @@ if (JUPYTER_KERNEL)
   endif ()
 
 endif () # if (JUPYTER_KERNEL)
+
+if (LCI_ENABLE)
+  find_package(
+    LCI
+    CONFIG
+    PATH_SUFFIXES
+    lib/cmake
+    lib64/cmake
+    QUIET
+  )
+  if (NOT LCI_FOUND)
+    message(STATUS "Unable to find LCI, getting dependency ...")
+    set(FETCHCONTENT_BASE_DIR "${PROJECT_SOURCE_DIR}/vendor/lci")
+    FetchContent_Declare(
+      lci
+      GIT_REPOSITORY "https://github.com/uiuc-hpc/lci.git"
+      GIT_TAG "master"
+      GIT_SHALLOW TRUE
+    )
+    FetchContent_GetProperties(lci)
+    if (NOT lci_POPULATED)
+      FetchContent_Populate(lci)
+      set(LCT_PMI_BACKEND_DEFAULT
+          "mpi"
+          CACHE INTERNAL ""
+      )
+      set(LCT_PMI_BACKEND_ENABLE_MPI
+          ON
+          CACHE INTERNAL ""
+      )
+      add_subdirectory(${lci_SOURCE_DIR} ${lci_BINARY_DIR} EXCLUDE_FROM_ALL)
+    endif ()
+  else ()
+    message(STATUS "Found LCI: ${LCI_DIR} (found version \"${LCI_VERSION}\")")
+  endif ()
+endif () # if (LCI_ENABLE)

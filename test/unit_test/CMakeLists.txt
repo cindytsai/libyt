@@ -88,3 +88,11 @@ else ()
     TestDataStructureAmr PUBLIC gtest_main ${Python_LIBRARIES} Python::NumPy yt
   )
 endif ()
+
+# Test LCI
+if (LCI_ENABLE)
+  add_executable(TestLCI test_lci.cpp)
+  set_target_properties(TestLCI PROPERTIES CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
+  target_include_directories(TestLCI PUBLIC ${MPI_CXX_INCLUDE_DIRS})
+  target_link_libraries(TestLCI PUBLIC gtest_main LCI::lci MPI::MPI_CXX)
+endif ()
