@@ -30,6 +30,7 @@ set(xtl_DIR           "" CACHE PATH "Path to xtlConfig.cmake (-DJUPYTER_KERNEL=O
 set(xeus_DIR          "" CACHE PATH "Path to xeusConfig.cmake (-DJUPYTER_KERNEL=ON)")
 set(xeus-zmq_DIR      "" CACHE PATH "Path to xeus-zmqConfig.cmake (-DJUPYTER_KERNEL=ON)")
 set(ZeroMQ_DIR        "" CACHE PATH "Path to ZeroMQConfig.cmake (-DJUPYTER_KERNEL=ON)")
+set(LCI_DIR           "" CACHE PATH "Path to LCIConfig.cmake (-DLCI_ENABLE=ON)")
 
 ###### libyt Internal Stuff (DO NOT TOUCH) ##############################################
 ## cpp version ##
