@@ -95,12 +95,13 @@ int yt_commit() {
 #ifdef SUPPORT_VALGRIND
   // Dump valgrind detailed snapshot (ApJS paper purpose)
   static int stamp = 0;
-  char valgrind[100];
-  snprintf(valgrind,
+  char valgrind_cmd[100];
+  snprintf(valgrind_cmd,
            100,
            "detailed_snapshot MPI%dAfterCommit%d",
            LibytProcessControl::Get().mpi_rank_,
            stamp);
+  VALGRIND_MONITOR_COMMAND(valgrind_cmd);
 #endif
 
   return YT_SUCCESS;
