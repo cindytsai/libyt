@@ -4,6 +4,10 @@
 #include "logging.h"
 #include "timer.h"
 
+#ifdef SUPPORT_VALGRIND
+#include <valgrind/valgrind.h>
+#endif
+
 /**
  * \defgroup api_yt_commit libyt API: yt_commit
  * \fn int yt_commit()
@@ -87,6 +91,17 @@ int yt_commit() {
   // Above all works like charm
   LibytProcessControl::Get().commit_grids_ = true;
   logging::LogInfo("Loading full hierarchy and local data ... done.\n");
+
+#ifdef SUPPORT_VALGRIND
+  // Dump valgrind detailed snapshot (ApJS paper purpose)
+  static int stamp = 0;
+  char valgrind[100];
+  snprintf(valgrind,
+           100,
+           "detailed_snapshot MPI%dAfterCommit%d",
+           LibytProcessControl::Get().mpi_rank_,
+           stamp);
+#endif
 
   return YT_SUCCESS;
 
