@@ -102,6 +102,7 @@ int yt_commit() {
            LibytProcessControl::Get().mpi_rank_,
            stamp);
   VALGRIND_MONITOR_COMMAND(valgrind_cmd);
+  stamp = stamp + 1;
 #endif
 
   return YT_SUCCESS;
