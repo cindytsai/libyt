@@ -90,7 +90,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           rm -rf build
-          cmake -B build -S . -DJUPYTER_KERNEL=ON
+          cmake -B build -S . -DJUPYTER_KERNEL=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
           cmake --build build
           cmake --install build --prefix "${{ steps.strings.outputs.install-prefix }}/libyt-jupyter-on"
           cd "${{ steps.strings.outputs.install-prefix }}/libyt-jupyter-on"
