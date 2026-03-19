@@ -167,6 +167,7 @@ jobs:
 
       - name: Install other dependencies
         run: |
+          sudo apt-get update
           ${{ matrix.install_dep_command }}
 
       - name: Set reusable strings
@@ -225,6 +226,7 @@ jobs:
 
       - name: Install other dependencies
         run: |
+          sudo apt-get update
           ${{ matrix.install_dep_command }}
 
       - name: Configure and Build
